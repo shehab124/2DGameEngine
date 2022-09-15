@@ -3,7 +3,7 @@
 
 #include <SDL.h>
 
-const int FPS = 30;
+const int FPS = 60;
 const int MILLISECS_PER_FRAME = 1000 / FPS;
 
 class Game
