@@ -1,18 +1,19 @@
 #include "Game.h"
+#include "Logger.h"
 #include <iostream>
 #include <SDL.h>
 #include <SDL_image.h>
 #include <glm/glm.hpp>
 
-Game::Game() //scope resolution, who owns this
+Game::Game()
 {
 	isRunning = false;
-	std::cout << "Game constructor called\n";
+	Logger::Log("Game Constructor called.");
 }
 
 Game::~Game()
 {
-	std::cout << "Game Destructor called";
+	Logger::Log("Game Destructor called.");
 }
 
 /*
@@ -23,7 +24,7 @@ void Game::Initialize()
 	//init sdl
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) //fails if we are running on a machine that doesn't have a gui
 	{
-		std::cerr << "Error initializing SDL." << std::endl;
+		Logger::Err("Error initializing SDL.");
 		return;
 	}
 
