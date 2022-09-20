@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "../Logger/Logger.h"
+#include "../ECS/ECS.h"
 #include <iostream>
 #include <SDL.h>
 #include <SDL_image.h>
@@ -81,13 +82,15 @@ void Game::ProcessInput() //TAKE INPUT FROM USER
 
 }
 
-glm::vec2 playerPosition;
-glm::vec2 playerVelocity;
+
 
 void Game::Setup() //initialize game objects
 {
-	playerPosition = glm::vec2(10.0, 20.0);
-	playerVelocity = glm::vec2(10.0, 5);
+	// TODO:
+	// Entity tank = registry.CreateEntity();
+	// tank.AddComponent<TransformComponent>();
+	// tank.AddComponent<BoxColliderComponent>();
+	// tank.AddCompoenent<SpriteComponent>("./assets/images/tank.png");
 }
 
 void Game::Update() //UPDATE GAME OBJECTS BASED ON INPUT FROM USER
@@ -105,8 +108,10 @@ void Game::Update() //UPDATE GAME OBJECTS BASED ON INPUT FROM USER
 	//Store previous frame time
 	millisecsPreviousFrame = SDL_GetTicks();
 
-	playerPosition.x += playerVelocity.x * deltaTime;
-	playerPosition.y += playerVelocity.y * deltaTime;
+	//TODO:
+	// MovementSystem.Update();
+	// CollisionSystem.Update();
+	// DamageSystem.Update();
 }
 
 void Game::Render() //UPDATE SCREEN
@@ -116,20 +121,7 @@ void Game::Render() //UPDATE SCREEN
 
 	//TODO: render all game objects
 
-	// load a PNG texture
-	SDL_Surface* surface = IMG_Load("./assets/images/tank-tiger-right.png"); //a surface is represented by edges
-	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-	SDL_FreeSurface(surface);
-
-
-
-	// destination of the rectangle in the screen
-	SDL_Rect dstRect = { 
-		static_cast<int>(playerPosition.x), static_cast<int>(playerPosition.y)
-		, 32, 32
-	};
-	SDL_RenderCopy(renderer, texture, NULL, &dstRect);
-	SDL_DestroyTexture(texture);
+	// TODO: Render game objects
 
 	SDL_RenderPresent(renderer);
 }
