@@ -1,4 +1,7 @@
 #include "ECS.h"
+#include "../Logger/Logger.h"
+
+int IComponent::nextId = 0;
 
 int Entity::GetId() const
 {
@@ -25,4 +28,48 @@ std::vector<Entity> System::GetSystemEntities() const
 const Signature& System::GetComponentSignature() const
 {
 	return componentSignature;
+}
+
+
+Entity Registry::CreateEntity()
+{
+	int entityId;
+
+	entityId = numEntities++;
+
+	Entity entity(entityId);
+
+	entitiesToBeAdded.insert(entity);
+
+	Logger::Log("Entity created with id = " + std::to_string(entityId));
+
+	return entity;
+}
+
+void Registry::AddEntityToSystems(Entity entity)
+{
+	const auto entityId = entity.GetId();
+
+	// Match entityComponentSignature <with> systemComponentSignature
+
+	const auto& entityComponentSignature = entityComponentSignatures[entityId];
+
+	// Loop all the systems
+	for (auto& system : systems)
+	{
+		const auto& systemComponentSignature = system.second->GetComponentSignature();
+
+		bool isInsterested = (entityComponentSignature & systemComponentSignature) == systemComponentSignature;
+
+		if (isInsterested)
+		{
+			system.second->AddEntityToSystem(entity);
+		}
+	}
+}
+
+void Registry::Update()
+{
+	//TODO: Add the entities that are waiting to be created to the active systems
+	//TODO: Remove the entities that are waiting to be killed from the active systems
 }
