@@ -7,6 +7,9 @@
 #include <glm/glm.hpp>
 #include "../Components/TransformComponent.h"
 #include "../Components/RigidBodyComponent.h"
+#include "../Components/SpriteComponent.h"
+#include "../Systems/MovementSystem.h"
+#include "../Systems/RenderSystem.h"
 
 Game::Game()
 {
@@ -81,21 +84,28 @@ void Game::ProcessInput() //TAKE INPUT FROM USER
 				break;
 		}
 	}
-
-
 }
 
 
 
 void Game::Setup() //initialize game objects
 {
+	// Add the system that need to be processed in our game
+	registry->AddSystem<MovementSystem>();
+	registry->AddSystem<RenderSystem>();
+
 	Entity tank = registry->CreateEntity();
 	
 	// add some component to that entity
 	tank.AddComponent<TransformComponent>(glm::vec2(10.0, 30.0), glm::vec2(1.0, 1.0), 0.0);
-	tank.AddComponent<RigidBodyComponent>(glm::vec2(50.0, 0));
+	tank.AddComponent<RigidBodyComponent>(glm::vec2(40.0, 0));
+	tank.AddComponent<SpriteComponent>(10 , 10);
 
-	tank.RemoveComponent<TransformComponent>();
+	Entity truck = registry->CreateEntity();
+	truck.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
+	truck.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 50));
+	truck.AddComponent<SpriteComponent>(10, 50);
+	
 
 }
 
@@ -114,10 +124,11 @@ void Game::Update() //UPDATE GAME OBJECTS BASED ON INPUT FROM USER
 	//Store previous frame time
 	millisecsPreviousFrame = SDL_GetTicks();
 
-	//TODO:
-	// MovementSystem.Update();
-	// CollisionSystem.Update();
-	// DamageSystem.Update();
+	// Update the registry to process the entities that are waiting to be created/deleted
+	registry->Update();
+
+	// Invoke all the systems that need to update
+	registry->GetSystem<MovementSystem>().Update(deltaTime);
 }
 
 void Game::Render() //UPDATE SCREEN
@@ -125,9 +136,7 @@ void Game::Render() //UPDATE SCREEN
 	SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255); //background color and transparency
 	SDL_RenderClear(renderer);
 
-	//TODO: render all game objects
-
-	// TODO: Render game objects
+	registry->GetSystem<RenderSystem>().Update(renderer);
 
 	SDL_RenderPresent(renderer);
 }
