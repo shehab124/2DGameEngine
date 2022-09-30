@@ -5,10 +5,13 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <glm/glm.hpp>
+#include "../Components/TransformComponent.h"
+#include "../Components/RigidBodyComponent.h"
 
 Game::Game()
 {
 	isRunning = false;
+	registry = std::make_unique<Registry>();
 	Logger::Log("Game Constructor called.");
 }
 
@@ -86,11 +89,14 @@ void Game::ProcessInput() //TAKE INPUT FROM USER
 
 void Game::Setup() //initialize game objects
 {
-	// TODO:
-	// Entity tank = registry.CreateEntity();
-	// tank.AddComponent<TransformComponent>();
-	// tank.AddComponent<BoxColliderComponent>();
-	// tank.AddCompoenent<SpriteComponent>("./assets/images/tank.png");
+	Entity tank = registry->CreateEntity();
+	
+	// add some component to that entity
+	tank.AddComponent<TransformComponent>(glm::vec2(10.0, 30.0), glm::vec2(1.0, 1.0), 0.0);
+	tank.AddComponent<RigidBodyComponent>(glm::vec2(50.0, 0));
+
+	tank.RemoveComponent<TransformComponent>();
+
 }
 
 void Game::Update() //UPDATE GAME OBJECTS BASED ON INPUT FROM USER
